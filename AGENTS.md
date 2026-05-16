@@ -28,6 +28,15 @@ Current source-of-truth docs to read before major work:
 - Plugin implementation: `plugins/`
 - Planning and design docs: `docs/superpowers/`
 
+## Codex State File Purposes
+
+- `.codex/HANDOFF.md`: current branch, working-tree snapshot, and exact next step
+- `.codex/memory.md`: stable repo-specific reminders that should survive across tasks
+- `.codex/tasks/roadmap.md`: high-level sequence of planned work
+- `.codex/tasks/backlog.md`: queued tasks not started yet
+- `.codex/tasks/in-progress.md`: only the work currently active
+- `.codex/tasks/done.md`: completed milestones worth preserving
+
 ## Plugin Notes
 
 - The plugin should remain an orchestrator for Stitch generation, review, and frontend scaffolding.

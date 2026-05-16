@@ -8,7 +8,8 @@
 - key decisions: keep repo guidance concise, treat Stitch as mandatory, and store Codex state only under `.codex/`
 
 ## Current State
-- git status: repository foundation complete and ready for the next implementation task
+- branch: `feat/repository-foundation`
+- working tree: clean foundation commit, plus untracked `CODEX_STITCH_PLAYBOOK.md` and `docs/`
 - running services: none
 - known issues: plugin scaffold and runtime files do not exist yet
 
