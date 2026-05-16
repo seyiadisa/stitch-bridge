@@ -1,0 +1,26 @@
+.superpowers/
+
+# Node package artifacts
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+
+# Logs and env files
+*.log
+.env
+.env.*
+
+# Build and framework outputs
+dist/
+build/
+coverage/
+.next/
+out/
+.nuxt/
+.svelte-kit/
+.vite/
+vite.config.ts.timestamp-*
+
+# TypeScript caches
+*.tsbuildinfo
