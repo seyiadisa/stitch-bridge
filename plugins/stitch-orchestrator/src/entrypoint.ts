@@ -203,6 +203,12 @@ function parseCliArgs(argv: string[]): RunInput {
           ]);
         }
 
+        if (argv.length !== 2) {
+          throw new InputValidationError([
+            "`--input` cannot be combined with other CLI flags. Pass either `--input <json>` or individual flags.",
+          ]);
+        }
+
         return parseJsonInput(next);
       }
       case "--prompt": {

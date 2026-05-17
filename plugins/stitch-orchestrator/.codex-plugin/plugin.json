@@ -2,13 +2,6 @@
   "name": "stitch-orchestrator",
   "version": "0.1.0",
   "description": "Stitch-first orchestration plugin scaffold for prompt-to-frontend workflows.",
-  "author": {
-    "name": "[TODO: author-name]",
-    "email": "[TODO: author-email]",
-    "url": "[TODO: author-url]"
-  },
-  "homepage": "[TODO: homepage-url]",
-  "repository": "[TODO: repository-url]",
   "license": "UNLICENSED",
   "keywords": [
     "stitch",
@@ -27,9 +20,6 @@
       "Interactive",
       "Write"
     ],
-    "websiteURL": "[TODO: website-url]",
-    "privacyPolicyURL": "[TODO: privacy-policy-url]",
-    "termsOfServiceURL": "[TODO: terms-of-service-url]",
     "defaultPrompt": [
       "Turn this product brief into a staged Stitch workflow.",
       "Set up a React + Vite app from an approved Stitch design.",

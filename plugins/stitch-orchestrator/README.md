@@ -31,24 +31,24 @@ Allowed values:
 
 ## Local usage
 
-Examples below use `npm`, but the scaffold does not lock the plugin to a package manager yet.
+Examples below use Bun, which matches this repo's default preference when `pnpm` is not already established.
 
 Build the scaffold:
 
 ```bash
-npm run build
+bun run build
 ```
 
 Run the entrypoint with flags:
 
 ```bash
-node dist/entrypoint.js --prompt "Design a fintech onboarding flow" --framework-target next --review-mode staged --constraint "Use Tailwind CSS"
+bun run start --prompt "Design a fintech onboarding flow" --framework-target next --review-mode staged --constraint "Use Tailwind CSS"
 ```
 
 Or pass JSON:
 
 ```bash
-node dist/entrypoint.js --input "{\"prompt\":\"Design a SaaS dashboard\",\"frameworkTarget\":\"react-vite\"}"
+bun run start --input "{\"prompt\":\"Design a SaaS dashboard\",\"frameworkTarget\":\"react-vite\"}"
 ```
 
 The current output is either a normalized configuration payload with a `not_implemented` route result or a structured `validation_error` response for invalid input.
