@@ -2,8 +2,17 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import process from "node:process";
 
-const SUPPORTED_FRAMEWORKS = ["next", "react-vite", "vue-vite"] as const;
-const SUPPORTED_REVIEW_MODES = ["default", "staged"] as const;
+import { ensureFrameworkTarget, type FrameworkTarget, SUPPORTED_FRAMEWORKS } from "./config/frameworks.js";
+import { ensureReviewMode } from "./config/reviewMode.js";
+import { resolveTargetFolder } from "./config/targetFolder.js";
+import type {
+  NormalizedRunConfig,
+  ReviewMode,
+  RouteResult,
+  RunInput,
+  ValidationErrorResult,
+} from "./types/run.js";
+
 const ALLOWED_INPUT_KEYS = [
   "prompt",
   "targetFolder",
@@ -11,38 +20,6 @@ const ALLOWED_INPUT_KEYS = [
   "reviewMode",
   "extraImplementationConstraints",
 ] as const;
-
-export type FrameworkTarget = (typeof SUPPORTED_FRAMEWORKS)[number];
-export type ReviewMode = (typeof SUPPORTED_REVIEW_MODES)[number];
-
-export interface RunInput {
-  prompt: string;
-  targetFolder?: string;
-  frameworkTarget?: FrameworkTarget;
-  reviewMode?: ReviewMode;
-  extraImplementationConstraints?: string[];
-}
-
-export interface NormalizedRunConfig {
-  prompt: string;
-  targetFolder: string;
-  frameworkTarget: FrameworkTarget | null;
-  reviewMode: ReviewMode;
-  extraImplementationConstraints: string[];
-}
-
-export interface RouteResult {
-  status: "not_implemented";
-  phase: "intake";
-  config: NormalizedRunConfig;
-  message: string;
-}
-
-export interface ValidationErrorResult {
-  status: "validation_error";
-  phase: "intake";
-  errors: string[];
-}
 
 export class InputValidationError extends Error {
   readonly issues: string[];
@@ -144,7 +121,7 @@ function normalizeFrameworkTarget(value: unknown): FrameworkTarget | null {
     return null;
   }
 
-  if (typeof value !== "string" || !SUPPORTED_FRAMEWORKS.includes(value as FrameworkTarget)) {
+  if (typeof value !== "string") {
     throw new InputValidationError([
       `Unsupported framework target. Expected one of ${SUPPORTED_FRAMEWORKS.join(
         ", ",
@@ -152,28 +129,26 @@ function normalizeFrameworkTarget(value: unknown): FrameworkTarget | null {
     ]);
   }
 
-  return value as FrameworkTarget;
+  try {
+    return ensureFrameworkTarget(value);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new InputValidationError([message]);
+  }
 }
 
 function normalizeReviewMode(value: unknown): ReviewMode {
-  if (value === undefined) {
-    return "default";
+  try {
+    return ensureReviewMode(value);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new InputValidationError([message]);
   }
-
-  if (typeof value !== "string" || !SUPPORTED_REVIEW_MODES.includes(value as ReviewMode)) {
-    throw new InputValidationError([
-      `Unsupported review mode. Expected one of ${SUPPORTED_REVIEW_MODES.join(
-        ", ",
-      )}.`,
-    ]);
-  }
-
-  return value as ReviewMode;
 }
 
 function normalizeTargetFolder(value: unknown, cwd: string): string {
   if (value === undefined) {
-    return path.resolve(cwd, ".");
+    return resolveTargetFolder({ cwd }).targetFolder;
   }
 
   if (typeof value !== "string") {
@@ -182,7 +157,7 @@ function normalizeTargetFolder(value: unknown, cwd: string): string {
     ]);
   }
 
-  return path.resolve(cwd, value);
+  return resolveTargetFolder({ cwd, targetFolder: value }).targetFolder;
 }
 
 function normalizeConstraints(value: unknown): string[] {

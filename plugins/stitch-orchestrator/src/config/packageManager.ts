@@ -23,8 +23,8 @@ export async function detectPackageManagerPolicy(
   }
 
   return {
-    name: "bun",
-    source: "default",
+    name: null,
+    source: "unresolved",
   };
 }
 

@@ -10,6 +10,9 @@ export interface ResolveTargetFolderOptions {
 export function resolveTargetFolder({
   cwd,
   targetFolder,
-}: ResolveTargetFolderOptions): ResolvedTargetFolder["targetFolder"] {
-  return targetFolder ? path.resolve(cwd, targetFolder) : path.resolve(cwd);
+}: ResolveTargetFolderOptions): ResolvedTargetFolder {
+  return {
+    cwd,
+    targetFolder: targetFolder ? path.resolve(cwd, targetFolder) : path.resolve(cwd),
+  };
 }

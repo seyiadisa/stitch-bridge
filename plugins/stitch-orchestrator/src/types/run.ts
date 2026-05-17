@@ -7,11 +7,40 @@ export const PACKAGE_MANAGERS = ["bun", "pnpm"] as const;
 export type PackageManagerName = (typeof PACKAGE_MANAGERS)[number];
 
 export interface PackageManagerPolicy {
-  name: PackageManagerName;
-  source: "default" | "bun" | "pnpm-lock";
+  name: PackageManagerName | null;
+  source: "bun" | "pnpm-lock" | "unresolved";
 }
 
 export interface ResolvedTargetFolder {
   cwd: string;
   targetFolder: string;
+}
+
+export interface RunInput {
+  prompt: string;
+  targetFolder?: string;
+  frameworkTarget?: string;
+  reviewMode?: string;
+  extraImplementationConstraints?: string[];
+}
+
+export interface NormalizedRunConfig {
+  prompt: string;
+  targetFolder: string;
+  frameworkTarget: import("../config/frameworks.js").FrameworkTarget | null;
+  reviewMode: ReviewMode;
+  extraImplementationConstraints: string[];
+}
+
+export interface RouteResult {
+  status: "not_implemented";
+  phase: "intake";
+  config: NormalizedRunConfig;
+  message: string;
+}
+
+export interface ValidationErrorResult {
+  status: "validation_error";
+  phase: "intake";
+  errors: string[];
 }

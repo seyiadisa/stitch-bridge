@@ -8,29 +8,35 @@ import { DEFAULT_REVIEW_MODE, REVIEW_MODES } from "../src/types/run.js";
 import { resolveTargetFolder } from "../src/config/targetFolder.js";
 import { SUPPORTED_FRAMEWORKS, ensureFrameworkTarget } from "../src/config/frameworks.js";
 import { detectPackageManagerPolicy } from "../src/config/packageManager.js";
+import { ensureReviewMode } from "../src/config/reviewMode.js";
 
 test("resolveTargetFolder uses the current folder by default", () => {
   const cwd = path.join("D:", "workspace", "stitch-plugin");
 
-  assert.equal(resolveTargetFolder({ cwd }), cwd);
+  assert.deepEqual(resolveTargetFolder({ cwd }), {
+    cwd,
+    targetFolder: cwd,
+  });
 });
 
 test("resolveTargetFolder respects an explicit target folder", () => {
   const cwd = path.join("D:", "workspace", "stitch-plugin");
 
-  assert.equal(
-    resolveTargetFolder({ cwd, targetFolder: "./apps/demo" }),
-    path.resolve(cwd, "apps/demo"),
-  );
+  assert.deepEqual(resolveTargetFolder({ cwd, targetFolder: "./apps/demo" }), {
+    cwd,
+    targetFolder: path.resolve(cwd, "apps/demo"),
+  });
 });
 
 test("detectPackageManagerPolicy prefers pnpm when pnpm-lock.yaml exists", async () => {
   const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-pnpm-"));
   fs.writeFileSync(path.join(targetFolder, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
 
-  await assert.doesNotReject(async () => {
-    const policy = await detectPackageManagerPolicy(targetFolder);
-    assert.equal(policy.name, "pnpm");
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: "pnpm",
+    source: "pnpm-lock",
   });
 });
 
@@ -43,7 +49,25 @@ test("detectPackageManagerPolicy keeps Bun when the folder is already configured
 
   const policy = await detectPackageManagerPolicy(targetFolder);
 
-  assert.equal(policy.name, "bun");
+  assert.deepEqual(policy, {
+    name: "bun",
+    source: "bun",
+  });
+});
+
+test("detectPackageManagerPolicy stays unresolved when no package manager markers exist", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-empty-"));
+  fs.writeFileSync(
+    path.join(targetFolder, "package.json"),
+    JSON.stringify({ name: "demo" }, null, 2),
+  );
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: null,
+    source: "unresolved",
+  });
 });
 
 test("ensureFrameworkTarget accepts the allowed frameworks", () => {
@@ -64,4 +88,13 @@ test("ensureFrameworkTarget rejects unsupported frameworks", () => {
 test("shared run types expose the supported review modes and default", () => {
   assert.deepEqual(REVIEW_MODES, ["default", "staged"]);
   assert.equal(DEFAULT_REVIEW_MODE, "default");
+  assert.equal(ensureReviewMode(undefined), "default");
+  assert.equal(ensureReviewMode("staged"), "staged");
+});
+
+test("ensureReviewMode rejects unsupported values", () => {
+  assert.throws(
+    () => ensureReviewMode("deep-review"),
+    /Unsupported review mode/,
+  );
 });

@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsx --test",
+    "test": "node --import tsx ./scripts/test-runner.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "start": "node dist/entrypoint.js"
   },
