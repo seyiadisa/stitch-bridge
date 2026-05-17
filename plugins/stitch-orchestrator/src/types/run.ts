@@ -5,10 +5,13 @@ export type ReviewMode = (typeof REVIEW_MODES)[number];
 
 export const PACKAGE_MANAGERS = ["bun", "pnpm"] as const;
 export type PackageManagerName = (typeof PACKAGE_MANAGERS)[number];
+export type UnsupportedPackageManagerName = "npm" | "yarn" | "unknown";
 
 export interface PackageManagerPolicy {
   name: PackageManagerName | null;
-  source: "bun" | "pnpm-lock" | "unresolved";
+  source: "bun" | "pnpm-lock" | "unsupported" | "none";
+  detectedManager: UnsupportedPackageManagerName | null;
+  signal: string | null;
 }
 
 export interface ResolvedTargetFolder {

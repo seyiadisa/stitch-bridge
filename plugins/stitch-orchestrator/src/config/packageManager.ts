@@ -1,9 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import type { PackageManagerPolicy } from "../types/run.js";
+import type { PackageManagerPolicy, UnsupportedPackageManagerName } from "../types/run.js";
 
 const BUN_MARKERS = ["bun.lock", "bun.lockb", "bunfig.toml"] as const;
+const UNSUPPORTED_MANAGER_SIGNALS = [
+  { fileName: "package-lock.json", manager: "npm" },
+  { fileName: "npm-shrinkwrap.json", manager: "npm" },
+  { fileName: "yarn.lock", manager: "yarn" },
+] as const;
 
 export async function detectPackageManagerPolicy(
   targetFolder: string,
@@ -12,6 +17,8 @@ export async function detectPackageManagerPolicy(
     return {
       name: "pnpm",
       source: "pnpm-lock",
+      detectedManager: null,
+      signal: "pnpm-lock.yaml",
     };
   }
 
@@ -19,12 +26,22 @@ export async function detectPackageManagerPolicy(
     return {
       name: "bun",
       source: "bun",
+      detectedManager: null,
+      signal: await detectBunSignal(targetFolder),
     };
+  }
+
+  const unsupportedManagerPolicy = await detectUnsupportedManagerPolicy(targetFolder);
+
+  if (unsupportedManagerPolicy) {
+    return unsupportedManagerPolicy;
   }
 
   return {
     name: null,
-    source: "unresolved",
+    source: "none",
+    detectedManager: null,
+    signal: null,
   };
 }
 
@@ -53,6 +70,78 @@ async function hasBunConfiguration(targetFolder: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+async function detectBunSignal(targetFolder: string): Promise<string> {
+  for (const marker of BUN_MARKERS) {
+    if (await pathExists(path.join(targetFolder, marker))) {
+      return marker;
+    }
+  }
+
+  return "packageManager:bun";
+}
+
+async function detectUnsupportedManagerPolicy(
+  targetFolder: string,
+): Promise<PackageManagerPolicy | null> {
+  for (const signal of UNSUPPORTED_MANAGER_SIGNALS) {
+    if (await pathExists(path.join(targetFolder, signal.fileName))) {
+      return {
+        name: null,
+        source: "unsupported",
+        detectedManager: signal.manager,
+        signal: signal.fileName,
+      };
+    }
+  }
+
+  const packageJsonPath = path.join(targetFolder, "package.json");
+
+  if (!(await pathExists(packageJsonPath))) {
+    return null;
+  }
+
+  try {
+    const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8")) as {
+      packageManager?: unknown;
+    };
+
+    if (typeof packageJson.packageManager !== "string") {
+      return null;
+    }
+
+    const detectedManager = normalizeDeclaredManager(packageJson.packageManager);
+
+    if (detectedManager === null || detectedManager === "bun") {
+      return null;
+    }
+
+    return {
+      name: null,
+      source: "unsupported",
+      detectedManager,
+      signal: `packageManager:${detectedManager}`,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function normalizeDeclaredManager(
+  packageManager: string,
+): UnsupportedPackageManagerName | "bun" | null {
+  const normalized = packageManager.split("@")[0]?.trim();
+
+  if (normalized === "bun") {
+    return "bun";
+  }
+
+  if (normalized === "npm" || normalized === "yarn") {
+    return normalized;
+  }
+
+  return normalized ? "unknown" : null;
 }
 
 async function pathExists(candidatePath: string): Promise<boolean> {

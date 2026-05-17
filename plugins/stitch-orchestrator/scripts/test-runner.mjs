@@ -7,7 +7,6 @@ import { fileURLToPath } from "node:url";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(scriptDir, "..");
 const testsRoot = path.join(packageRoot, "tests");
-const tsxCli = path.join(packageRoot, "node_modules", "tsx", "dist", "cli.mjs");
 
 const allTestFiles = await findTestFiles(testsRoot);
 const rawArgs = process.argv.slice(2);
@@ -18,7 +17,7 @@ if (matchedFiles.length === 0) {
   process.exit(1);
 }
 
-const child = spawn(process.execPath, [tsxCli, "--test", ...matchedFiles], {
+const child = spawn(process.execPath, ["--import", "tsx", "--test", ...matchedFiles], {
   cwd: packageRoot,
   stdio: "inherit",
 });

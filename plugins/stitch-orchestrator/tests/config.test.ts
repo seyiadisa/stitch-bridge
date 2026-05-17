@@ -37,6 +37,8 @@ test("detectPackageManagerPolicy prefers pnpm when pnpm-lock.yaml exists", async
   assert.deepEqual(policy, {
     name: "pnpm",
     source: "pnpm-lock",
+    detectedManager: null,
+    signal: "pnpm-lock.yaml",
   });
 });
 
@@ -52,21 +54,94 @@ test("detectPackageManagerPolicy keeps Bun when the folder is already configured
   assert.deepEqual(policy, {
     name: "bun",
     source: "bun",
+    detectedManager: null,
+    signal: "packageManager:bun",
   });
 });
 
-test("detectPackageManagerPolicy stays unresolved when no package manager markers exist", async () => {
-  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-empty-"));
+test("detectPackageManagerPolicy keeps Bun when bun.lock exists", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-bun-lock-"));
+  fs.writeFileSync(path.join(targetFolder, "bun.lock"), "");
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: "bun",
+    source: "bun",
+    detectedManager: null,
+    signal: "bun.lock",
+  });
+});
+
+test("detectPackageManagerPolicy keeps Bun when bun.lockb exists", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-bun-lockb-"));
+  fs.writeFileSync(path.join(targetFolder, "bun.lockb"), "");
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: "bun",
+    source: "bun",
+    detectedManager: null,
+    signal: "bun.lockb",
+  });
+});
+
+test("detectPackageManagerPolicy keeps Bun when bunfig.toml exists", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-bunfig-"));
+  fs.writeFileSync(path.join(targetFolder, "bunfig.toml"), "preload = []");
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: "bun",
+    source: "bun",
+    detectedManager: null,
+    signal: "bunfig.toml",
+  });
+});
+
+test("detectPackageManagerPolicy flags unsupported npm-style manager signals", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-npm-"));
+  fs.writeFileSync(path.join(targetFolder, "package-lock.json"), "{}");
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: null,
+    source: "unsupported",
+    detectedManager: "npm",
+    signal: "package-lock.json",
+  });
+});
+
+test("detectPackageManagerPolicy flags unsupported packageManager declarations", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-yarn-"));
   fs.writeFileSync(
     path.join(targetFolder, "package.json"),
-    JSON.stringify({ name: "demo" }, null, 2),
+    JSON.stringify({ name: "demo", packageManager: "yarn@4.4.1" }, null, 2),
   );
 
   const policy = await detectPackageManagerPolicy(targetFolder);
 
   assert.deepEqual(policy, {
     name: null,
-    source: "unresolved",
+    source: "unsupported",
+    detectedManager: "yarn",
+    signal: "packageManager:yarn",
+  });
+});
+
+test("detectPackageManagerPolicy reports no signal for a new app folder", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-empty-"));
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: null,
+    source: "none",
+    detectedManager: null,
+    signal: null,
   });
 });
 
