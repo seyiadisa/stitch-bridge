@@ -1,0 +1,22 @@
+{
+  "name": "stitch-orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local Codex plugin scaffold for Stitch-first frontend orchestration.",
+  "type": "module",
+  "main": "dist/entrypoint.js",
+  "files": [
+    "dist",
+    ".codex-plugin",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "start": "node dist/entrypoint.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.3"
+  }
+}
