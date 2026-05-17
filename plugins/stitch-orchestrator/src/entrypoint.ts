@@ -4,6 +4,13 @@ import process from "node:process";
 
 const SUPPORTED_FRAMEWORKS = ["next", "react-vite", "vue-vite"] as const;
 const SUPPORTED_REVIEW_MODES = ["default", "staged"] as const;
+const ALLOWED_INPUT_KEYS = [
+  "prompt",
+  "targetFolder",
+  "frameworkTarget",
+  "reviewMode",
+  "extraImplementationConstraints",
+] as const;
 
 export type FrameworkTarget = (typeof SUPPORTED_FRAMEWORKS)[number];
 export type ReviewMode = (typeof SUPPORTED_REVIEW_MODES)[number];
@@ -58,6 +65,18 @@ export function normalizeRunInput(
   }
 
   const candidate = input as Record<string, unknown>;
+  const unknownKeys = Object.keys(candidate).filter(
+    (key) => !ALLOWED_INPUT_KEYS.includes(key as (typeof ALLOWED_INPUT_KEYS)[number]),
+  );
+
+  if (unknownKeys.length > 0) {
+    throw new InputValidationError([
+      `Unknown input field${unknownKeys.length === 1 ? "" : "s"}: ${unknownKeys.join(
+        ", ",
+      )}. Allowed fields are ${ALLOWED_INPUT_KEYS.join(", ")}.`,
+    ]);
+  }
+
   const prompt = normalizePrompt(candidate.prompt);
   const frameworkTarget = normalizeFrameworkTarget(candidate.frameworkTarget);
   const reviewMode = normalizeReviewMode(candidate.reviewMode);
@@ -274,7 +293,7 @@ function parseJsonInput(serialized: string): RunInput {
 }
 
 function requireValue(flag: string, value: string | undefined): string {
-  if (!value) {
+  if (!value || value.startsWith("--")) {
     throw new InputValidationError([`Missing value after ${flag}.`]);
   }
 

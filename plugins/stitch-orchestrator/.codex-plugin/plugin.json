@@ -14,7 +14,6 @@
     "displayName": "Stitch Orchestrator",
     "shortDescription": "Turns a prompt into a Stitch-driven frontend workflow.",
     "longDescription": "Scaffold entrypoint for a Stitch-first plugin that validates run inputs, selects a framework target, and routes into the future orchestration pipeline.",
-    "developerName": "Local Development",
     "category": "Developer Tools",
     "capabilities": [
       "Interactive",
