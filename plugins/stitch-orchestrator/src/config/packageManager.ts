@@ -22,6 +22,17 @@ export async function detectPackageManagerPolicy(
     };
   }
 
+  const declaredPackageManager = await detectDeclaredPackageManager(targetFolder);
+
+  if (declaredPackageManager === "pnpm") {
+    return {
+      name: "pnpm",
+      source: "pnpm",
+      detectedManager: null,
+      signal: "packageManager:pnpm",
+    };
+  }
+
   if (await hasBunConfiguration(targetFolder)) {
     return {
       name: "bun",
@@ -113,7 +124,7 @@ async function detectUnsupportedManagerPolicy(
 
     const detectedManager = normalizeDeclaredManager(packageJson.packageManager);
 
-    if (detectedManager === null || detectedManager === "bun") {
+    if (detectedManager === null || detectedManager === "bun" || detectedManager === "pnpm") {
       return null;
     }
 
@@ -130,11 +141,15 @@ async function detectUnsupportedManagerPolicy(
 
 function normalizeDeclaredManager(
   packageManager: string,
-): UnsupportedPackageManagerName | "bun" | null {
+): UnsupportedPackageManagerName | "bun" | "pnpm" | null {
   const normalized = packageManager.split("@")[0]?.trim();
 
   if (normalized === "bun") {
     return "bun";
+  }
+
+  if (normalized === "pnpm") {
+    return "pnpm";
   }
 
   if (normalized === "npm" || normalized === "yarn") {
@@ -142,6 +157,30 @@ function normalizeDeclaredManager(
   }
 
   return normalized ? "unknown" : null;
+}
+
+async function detectDeclaredPackageManager(
+  targetFolder: string,
+): Promise<"pnpm" | "bun" | UnsupportedPackageManagerName | null> {
+  const packageJsonPath = path.join(targetFolder, "package.json");
+
+  if (!(await pathExists(packageJsonPath))) {
+    return null;
+  }
+
+  try {
+    const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8")) as {
+      packageManager?: unknown;
+    };
+
+    if (typeof packageJson.packageManager !== "string") {
+      return null;
+    }
+
+    return normalizeDeclaredManager(packageJson.packageManager);
+  } catch {
+    return null;
+  }
 }
 
 async function pathExists(candidatePath: string): Promise<boolean> {

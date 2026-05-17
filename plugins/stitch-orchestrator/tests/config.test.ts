@@ -42,6 +42,23 @@ test("detectPackageManagerPolicy prefers pnpm when pnpm-lock.yaml exists", async
   });
 });
 
+test("detectPackageManagerPolicy keeps pnpm when package.json declares pnpm without a lockfile", async () => {
+  const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-pnpm-pkgmgr-"));
+  fs.writeFileSync(
+    path.join(targetFolder, "package.json"),
+    JSON.stringify({ name: "demo", packageManager: "pnpm@9.1.0" }, null, 2),
+  );
+
+  const policy = await detectPackageManagerPolicy(targetFolder);
+
+  assert.deepEqual(policy, {
+    name: "pnpm",
+    source: "pnpm",
+    detectedManager: null,
+    signal: "packageManager:pnpm",
+  });
+});
+
 test("detectPackageManagerPolicy keeps Bun when the folder is already configured for Bun", async () => {
   const targetFolder = fs.mkdtempSync(path.join(os.tmpdir(), "stitch-config-bun-"));
   fs.writeFileSync(
