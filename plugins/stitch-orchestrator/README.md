@@ -9,6 +9,7 @@ This scaffold provides:
 - `.codex-plugin/plugin.json` metadata for local development
 - a TypeScript runtime shell
 - a minimal entrypoint contract that validates and normalizes run input
+- structured scaffold validation errors for invalid command-surface input
 - a routing stub that reports the normalized configuration without running orchestration
 
 The actual Stitch workflow, review loop, state management, and framework generation layers will be added in later tasks.
@@ -50,4 +51,4 @@ Or pass JSON:
 node dist/entrypoint.js --input "{\"prompt\":\"Design a SaaS dashboard\",\"frameworkTarget\":\"react-vite\"}"
 ```
 
-The current output is a normalized configuration payload plus a `not_implemented` route result.
+The current output is either a normalized configuration payload with a `not_implemented` route result or a structured `validation_error` response for invalid input.
