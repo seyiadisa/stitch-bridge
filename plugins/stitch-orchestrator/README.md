@@ -1,54 +1,50 @@
 # stitch-orchestrator
 
-`stitch-orchestrator` is the local Codex plugin scaffold for the Stitch-first workflow described in this repository.
+`stitch-orchestrator` is a shareable Codex plugin for turning approved Stitch designs into faithful frontend implementations.
 
-## Current scope
+## Architecture
 
-This scaffold provides:
+This plugin is intentionally skill-first:
 
-- `.codex-plugin/plugin.json` metadata for local development
-- a TypeScript runtime shell
-- a minimal entrypoint contract that validates and normalizes run input
-- structured scaffold validation errors for invalid command-surface input
-- a routing stub that reports the normalized configuration without running orchestration
+- bundled skills guide Codex through Stitch generation, design interpretation, implementation, and review
+- a bundled Stitch MCP config gives the plugin its own Stitch connection path
+- a single small Node script handles ADC token lookup and request headers for the remote Stitch MCP server
 
-The actual Stitch workflow, review loop, state management, and framework generation layers will be added in later tasks.
+The plugin does **not** try to replace Codex with a large scripted frontend generator. Its job is to make Codex better at reading Stitch artifacts and implementing them accurately.
 
-## Command contract
+## Bundled Components
 
-The entrypoint currently accepts these inputs:
+- `.codex-plugin/plugin.json`
+- `.mcp.json`
+- `skills/stitch-generate-design-pass/`
+- `skills/stitch-interpret-design/`
+- `skills/stitch-implement-frontend/`
+- `skills/stitch-review-sync/`
+- `scripts/stitch-mcp-remote.mjs`
 
-- `prompt`
-- `targetFolder`
-- `frameworkTarget`
-- `reviewMode`
-- `extraImplementationConstraints`
+## Requirements
 
-Allowed values:
+- `gcloud` installed and available on `PATH`
+- `gcloud auth application-default login` already completed
+- a billing project available through `GOOGLE_CLOUD_PROJECT`, `STITCH_BILLING_PROJECT`, or the active `gcloud` project
+- `pnpm install` run once in this plugin folder to install `mcp-remote`
 
-- `frameworkTarget`: `next`, `react-vite`, `vue-vite`
-- `reviewMode`: `default`, `staged`
+## Stitch MCP Setup
 
-## Local usage
+The bundled `.mcp.json` launches:
 
-Examples below use Bun, which matches this repo's default preference when `pnpm` is not already established.
+- `node ./scripts/stitch-mcp-remote.mjs`
 
-Build the scaffold:
+That script:
 
-```bash
-bun run build
-```
+- resolves the local `mcp-remote` dependency
+- obtains an ADC access token from `gcloud`
+- resolves the Google billing project
+- forwards the request to `https://stitch.googleapis.com/mcp`
 
-Run the entrypoint with flags:
+## Intended Workflow
 
-```bash
-bun run start --prompt "Design a fintech onboarding flow" --framework-target next --review-mode staged --constraint "Use Tailwind CSS"
-```
-
-Or pass JSON:
-
-```bash
-bun run start --input "{\"prompt\":\"Design a SaaS dashboard\",\"frameworkTarget\":\"react-vite\"}"
-```
-
-The current output is either a normalized configuration payload with a `not_implemented` route result or a structured `validation_error` response for invalid input.
+1. Use `stitch-generate-design-pass` to create or refresh the Stitch artifacts.
+2. Use `stitch-interpret-design` to derive routes, shared primitives, and implementation priorities from the approved pass.
+3. Use `stitch-implement-frontend` to build the app in Next.js, Nuxt, React + Vite, or Vue + Vite.
+4. Use `stitch-review-sync` to compare the implementation back to Stitch and decide the smallest correction loop.

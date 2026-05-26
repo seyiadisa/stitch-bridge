@@ -1,24 +1,14 @@
 {
   "name": "stitch-orchestrator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Local Codex plugin scaffold for Stitch-first frontend orchestration.",
+  "description": "Skill-first Codex plugin for Stitch-driven frontend implementation.",
   "type": "module",
-  "main": "dist/entrypoint.js",
-  "files": [
-    "dist",
-    ".codex-plugin",
-    "README.md"
-  ],
+  "packageManager": "pnpm@10.22.0",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "node --import tsx ./scripts/test-runner.mjs",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "start": "node dist/entrypoint.js"
+    "check": "node --check ./scripts/stitch-mcp-remote.mjs"
   },
-  "devDependencies": {
-    "@types/node": "^24.0.0",
-    "tsx": "^4.20.6",
-    "typescript": "^5.8.3"
+  "dependencies": {
+    "mcp-remote": "^0.1.38"
   }
 }

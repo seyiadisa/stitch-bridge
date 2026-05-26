@@ -1,28 +1,34 @@
 {
   "name": "stitch-orchestrator",
-  "version": "0.1.0",
-  "description": "Stitch-first orchestration plugin scaffold for prompt-to-frontend workflows.",
+  "version": "0.2.0",
+  "description": "Skill-first Codex plugin for Stitch design interpretation and frontend implementation.",
+  "author": {
+    "name": "Stitch Plugin Contributors"
+  },
   "license": "UNLICENSED",
   "keywords": [
     "stitch",
     "codex",
     "plugin",
-    "frontend",
-    "orchestrator"
+    "skills",
+    "frontend"
   ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Stitch Orchestrator",
-    "shortDescription": "Turns a prompt into a Stitch-driven frontend workflow.",
-    "longDescription": "Scaffold entrypoint for a Stitch-first plugin that validates run inputs, selects a framework target, and routes into the future orchestration pipeline.",
+    "shortDescription": "Interpret Stitch designs and implement them faithfully.",
+    "longDescription": "A self-contained Codex plugin that bundles Stitch MCP access plus specialized skills for generating design passes, interpreting approved Stitch artifacts, implementing frontend apps, and reviewing code-to-design fidelity.",
+    "developerName": "Stitch Plugin Contributors",
     "category": "Developer Tools",
     "capabilities": [
       "Interactive",
       "Write"
     ],
     "defaultPrompt": [
-      "Turn this product brief into a staged Stitch workflow.",
-      "Set up a React + Vite app from an approved Stitch design.",
-      "Review the design flow before generating the frontend."
+      "Generate a Stitch design pass for this product brief.",
+      "Interpret this approved Stitch pass before implementing the app.",
+      "Implement this Stitch design in Nuxt with high visual fidelity."
     ],
     "brandColor": "#0F766E"
   }
