@@ -1,4 +1,5 @@
 .superpowers/
+stitch-design/
 
 # Node package artifacts
 node_modules/
@@ -24,3 +25,7 @@ vite.config.ts.timestamp-*
 
 # TypeScript caches
 *.tsbuildinfo
+
+# Python caches
+__pycache__/
+*.pyc

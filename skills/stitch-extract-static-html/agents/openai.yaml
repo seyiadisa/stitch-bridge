@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Extract Static HTML"
+  short_description: "Capture a self-contained HTML snapshot for Stitch"
+  default_prompt: "Use $stitch-extract-static-html to extract a self-contained HTML snapshot from this app for Stitch upload."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for downstream upload workflows"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

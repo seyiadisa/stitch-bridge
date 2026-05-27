@@ -1,0 +1,28 @@
+{
+  "name": "stitch-orchestrator",
+  "version": "0.2.0",
+  "description": "Skill-first Codex plugin for Stitch design ingestion, interpretation, and frontend implementation.",
+  "author": {
+    "name": "Oluwaseyi Adisa"
+  },
+  "license": "UNLICENSED",
+  "keywords": ["stitch", "codex", "plugin", "skills", "frontend", "design-system", "prompting"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Stitch Orchestrator",
+    "shortDescription": "Generate, ingest, interpret, and implement Stitch designs faithfully.",
+    "longDescription": "A self-contained Codex plugin that bundles Stitch MCP access plus specialized skills for generating design passes, extracting design inputs from existing apps, synthesizing or sharpening design systems, interpreting approved Stitch artifacts, implementing frontend apps, and reviewing code-to-design fidelity. Some workflow ideas in the imported design and utility skills were adapted from google-labs-code/stitch-skills.",
+    "developerName": "Stitch Plugin Contributors",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": [
+      "Generate a Stitch design pass for this product brief.",
+      "Synthesize a DESIGN.md from this Stitch project and make it feel more premium.",
+      "Extract a Stitch-ready DESIGN.md from this frontend repo and upload the result to Stitch.",
+      "Interpret this approved Stitch pass before implementing the app.",
+      "Implement this Stitch design in Nuxt with high visual fidelity."
+    ],
+    "brandColor": "#0F766E"
+  }
+}

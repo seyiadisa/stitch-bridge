@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Generate Design Pass"
+  short_description: "Create and refresh Stitch passes"
+  default_prompt: "Use $stitch-generate-design-pass to create or refresh a Stitch design pass for this product brief."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for design generation"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

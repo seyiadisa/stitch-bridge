@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Implement Frontend"
+  short_description: "Build app code from approved Stitch designs"
+  default_prompt: "Use $stitch-implement-frontend to implement this approved Stitch pass in the target frontend framework."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for design-reference access during implementation"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

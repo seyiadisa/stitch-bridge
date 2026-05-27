@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Interpret Design"
+  short_description: "Turn Stitch artifacts into a build brief"
+  default_prompt: "Use $stitch-interpret-design to translate this approved Stitch pass into an implementation-ready frontend brief."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for reading approved design artifacts"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

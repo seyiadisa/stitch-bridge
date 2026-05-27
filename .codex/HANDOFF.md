@@ -1,23 +1,40 @@
 # Session Handoff
 
 ## Last Completed Task
-- task: Replace the old stitch-orchestrator runtime with a self-contained skill-first plugin
+- task: Make imported Stitch skills feel native, add selected utility skills, and harden local helper workflows
 - branch: `codex/feat/stitch-skill-plugin`
-- commit: `working tree only`
-- files changed: `plugins/stitch-orchestrator/.codex-plugin/plugin.json`, `plugins/stitch-orchestrator/.mcp.json`, `plugins/stitch-orchestrator/skills/*`, `plugins/stitch-orchestrator/scripts/stitch-mcp-remote.mjs`, `plugins/stitch-orchestrator/package.json`, `AGENTS.md`, `CODEX_STITCH_PLAYBOOK.md`
-- key decisions: center the plugin on specialized skills instead of a generator runtime, bundle the Stitch MCP connection path inside the plugin, and keep runtime code limited to Stitch auth/header wiring
+- commit: pending for this session
+- files changed:
+  - plugin metadata and docs at the repo root
+  - imported utility skills: `skills/stitch-design-md/`, `skills/stitch-enhance-prompt/`, `skills/stitch-taste-design/`
+  - native-ized imported design skills and helper scripts
+  - `.gitignore` now ignores `stitch-design/`
+- key decisions:
+  - kept the plugin skill-first and did not add a heavyweight generator runtime
+  - adapted the upload helper to prefer ADC + billing-project auth, matching the bundled MCP flow
+  - added `tsx` and `puppeteer` so the copied HTML snapshot scripts have local runtime support
+  - made the snapshot script prefer an installed Chrome/Edge executable when present
 
 ## Current State
 - branch: `codex/feat/stitch-skill-plugin`
-- working tree: skill-first plugin structure implemented and validated; old TypeScript orchestrator files are removed in the working tree and replaced with bundled skills plus `.mcp.json`
+- git status: root plugin changes are ready to stage; nested `stitch-design/` clone is ignored; old `plugins/stitch-orchestrator/*` paths still appear as deleted because of the earlier repo flattening
 - running services: none
-- known issues: the `SKILL.md` contents are intentionally first-pass and should be reviewed in depth later; there is no heavyweight frontend generator runtime anymore by design
+- verification:
+  - passed: `pnpm run check`
+  - passed: `python -m py_compile skills/stitch-upload-to-stitch/scripts/upload_to_stitch.py`
+  - passed: `pnpm exec tsx skills/stitch-extract-static-html/scripts/snapshot.ts --help`
+  - passed: `git status --ignored --short stitch-design` shows `!! stitch-design/`
+- known issue:
+  - `pnpm exec puppeteer browsers install chrome` failed with an upstream archive error, so the snapshot script now falls back to any local Chrome/Edge install via `PUPPETEER_EXECUTABLE_PATH` or common default paths
 
 ## Next Task
-- exact next step: review and deepen the bundled skill content, especially the interpretation and implementation workflows, before adding any further helper code
-- files to read first: `plugins/stitch-orchestrator/skills/stitch-generate-design-pass/SKILL.md`, `plugins/stitch-orchestrator/skills/stitch-interpret-design/SKILL.md`, `plugins/stitch-orchestrator/skills/stitch-implement-frontend/SKILL.md`
-- constraints/gotchas: keep the plugin self-contained, avoid drifting back toward a script-heavy generator architecture, and preserve the Stitch-first artifact contract
+- exact next step: stage the root plugin files only, commit them, and ignore unrelated `.codex/memory.md` changes unless you explicitly want them included
+- files to read first:
+  - `.codex-plugin/plugin.json`
+  - `README.md`
+  - `skills/stitch-upload-to-stitch/SKILL.md`
+  - `skills/stitch-upload-to-stitch/scripts/upload_to_stitch.py`
+  - `skills/stitch-design-md/SKILL.md`
 
 ## Open Issues
-- the plugin now depends on `pnpm install` having been run once so the bundled `mcp-remote` dependency is available
-- the repository still contains deleted-file changes from the removed TypeScript runtime that should be committed together with the new skill-first files
+- decide later whether to import any additional ideas from `stitch-build/react-components` as dedicated references instead of only infusing its rules into `stitch-implement-frontend`

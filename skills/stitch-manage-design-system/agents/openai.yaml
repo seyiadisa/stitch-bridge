@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Manage Design System"
+  short_description: "Create or update Stitch design systems"
+  default_prompt: "Use $stitch-manage-design-system to turn this DESIGN.md into a Stitch design system and apply it to the right screens."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for design-system creation and application"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Taste Design"
+  short_description: "Write premium, opinionated DESIGN.md guidance"
+  default_prompt: "Use $stitch-taste-design to make this Stitch design system feel premium and less generic."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for downstream design-generation workflows"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true

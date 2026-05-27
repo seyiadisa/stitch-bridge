@@ -1,0 +1,15 @@
+interface:
+  display_name: "Stitch Review Sync"
+  short_description: "Check frontend fidelity against Stitch"
+  default_prompt: "Use $stitch-review-sync to compare the current frontend implementation against the approved Stitch pass and pick the smallest correction loop."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "stitch"
+      description: "Bundled Stitch MCP server for design-reference review"
+      transport: "streamable_http"
+      url: "https://stitch.googleapis.com/mcp"
+
+policy:
+  allow_implicit_invocation: true
