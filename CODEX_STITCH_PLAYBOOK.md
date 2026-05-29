@@ -1,6 +1,6 @@
 # Codex Stitch Playbook
 
-This playbook defines the preferred workflow for the Stitch plugin in this repository.
+This playbook defines the preferred workflow for the lean Stitch plugin in this repository.
 
 ## Principle
 
