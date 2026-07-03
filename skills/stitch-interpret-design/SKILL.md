@@ -15,6 +15,8 @@ This skill exists to reduce ambiguity between design artifacts and implementatio
 - `.stitch/DESIGN.md`
 - `.stitch/UI_FLOW.md`
 - approved `.stitch/designs/*.screen.json`
+- downloaded `.stitch/designs/*.html`
+- downloaded `.stitch/designs/*.jpeg`
 - any existing app structure that will receive the implementation
 
 ## Required Output
@@ -34,7 +36,7 @@ The brief can live in the working conversation, `.codex/HANDOFF.md`, or another 
 
 1. Read `.stitch/DESIGN.md` for the design system contract.
 2. Read `.stitch/UI_FLOW.md` for the product and screen flow contract.
-3. Read the approved `.stitch/designs/*.screen.json` files and any review-ready notes in `design-output/`.
+3. Read the approved `.stitch/designs/*.screen.json` files, downloaded `.stitch/designs/*.html` files, and any review-ready notes in `design-output/`.
 4. Produce an implementation brief that identifies:
    - route inventory
    - screen-to-route mapping
@@ -51,6 +53,7 @@ When the implementation brief is clear, hand off to `stitch-implement-frontend`.
 ## Guardrails
 
 - Do not skip straight to coding from raw Stitch artifacts.
+- Do not treat screenshots as the primary structural source when matching screen HTML is available.
 - Do not assume every visual difference deserves a reusable component.
 - Preserve the product language and trust cues defined in the design pass.
 - Do not regenerate Stitch here. If the design itself is wrong, hand back to `stitch-generate-design-pass`.

@@ -14,6 +14,7 @@ This skill is for application code only. It should not regenerate design artifac
 - a framework target: Next.js, Nuxt, React + Vite, or Vue + Vite
 - the implementation brief from `stitch-interpret-design`
 - approved Stitch artifacts for comparison
+- downloaded Stitch HTML artifacts for structural reference
 - the target app folder
 
 ## Required Output
@@ -48,8 +49,12 @@ If the design intent is still unclear, stop and return to `stitch-interpret-desi
    and keep static mock data separate when that makes iteration or testing easier.
 5. Reuse local `.stitch/designs/*` artifacts when they already exist unless the user
    asks to refresh them from Stitch.
-6. Build one screen at a time and compare it back to the approved Stitch artifacts as you go.
-7. Run the smallest meaningful verification for the chosen framework before claiming completion.
+6. Use the downloaded `.stitch/designs/*.html` files as the primary screen-structure reference:
+   - preserve hierarchy, section boundaries, repeated patterns, and token usage cues
+   - adapt that structure into framework-appropriate components instead of copying static HTML verbatim
+7. Use screenshots to verify visual fidelity and catch drift that the HTML alone does not explain.
+8. Build one screen at a time and compare it back to the approved Stitch artifacts as you go.
+9. Run the smallest meaningful verification for the chosen framework before claiming completion.
 
 ## Handoff
 
@@ -61,6 +66,7 @@ After the implementation is usable, hand off to `stitch-review-sync`.
 - Do not flatten every screen into one file if reuse is obvious.
 - Do not hardcode arbitrary colors or spacing when the interpreted design tokens
   can be expressed as shared theme variables.
+- Do not treat screenshots as the main implementation source when matching Stitch HTML is available.
 - Do not "improve" the design away from Stitch unless the user explicitly asks for reinterpretation.
 - Do not re-scope routes, states, or shared components casually during coding. If the brief is wrong, return to `stitch-interpret-design`.
 - Do not claim fidelity based only on code structure. Use `stitch-review-sync` to compare back to Stitch.

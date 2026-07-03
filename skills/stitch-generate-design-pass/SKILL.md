@@ -24,6 +24,8 @@ Leave the workspace with:
 - updated `.stitch/metadata.json`
 - one prompt file per target screen under `.stitch/prompts/`
 - raw Stitch artifacts for the current pass under `.stitch/designs/`
+- downloaded `.stitch/designs/*.html` files for generated screens
+- downloaded `.stitch/designs/*.jpeg` screenshots for generated screens
 - a review-ready pass folder under `design-output/`
 - enough state in `.codex/HANDOFF.md` for the next skill to continue
 
@@ -39,8 +41,11 @@ If the design pass is not ready, stop with a clear failure instead of partially 
 3. Turn rough screen prompts into structured Stitch-ready prompts before generation. Each prompt should name the target user, the screen purpose, the primary hierarchy, the key actions, the important states, and any non-negotiable trust or brand cues.
 4. Reuse a known Stitch project when the workspace already references one. Otherwise create a new project, then persist the project and screen identifiers to `.stitch/metadata.json`.
 5. Generate one screen at a time and preserve each result before moving on.
-6. Keep raw artifacts under `.stitch/` and review-ready artifacts under `design-output/<pass-name>/`.
-7. Stop at the review gate. Do not begin frontend implementation inside this skill.
+6. After generation metadata is current, run the bundled SDK helper:
+   - `node ./scripts/download-stitch-artifacts.mjs`
+   This step is required. It must download both HTML and image artifacts for the approved screens before handoff.
+7. Keep raw artifacts under `.stitch/` and review-ready artifacts under `design-output/<pass-name>/`.
+8. Stop at the review gate. Do not begin frontend implementation inside this skill.
 
 ## Handoff
 
@@ -52,6 +57,7 @@ After review approval exists, hand off to `stitch-interpret-design`.
 - Never overwrite a successful artifact path blindly during retries.
 - Prefer additive pass history over replacement.
 - If Stitch readiness fails, explain the missing auth or project requirement clearly.
+- If `STITCH_API_KEY` is missing or HTML downloads fail, stop the workflow. Do not continue with screenshot-only artifacts.
 - Do not infer component structure or framework routing here. That belongs to `stitch-interpret-design`.
 
 Load `references/artifact-contract.md` when you need the exact file contract.

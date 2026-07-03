@@ -8,6 +8,8 @@ Use these workspace locations consistently:
 - `.stitch/prompts/*.md`
 - `.stitch/designs/*.response.json`
 - `.stitch/designs/*.screen.json`
+- `.stitch/designs/*.html`
+- `.stitch/designs/*.jpeg`
 - `design-output/<pass-name>/`
 - `.codex/HANDOFF.md`
 

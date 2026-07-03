@@ -14,6 +14,7 @@ This skill is for evaluation and correction planning. It should decide whether t
 - the current frontend implementation
 - the approved Stitch artifacts
 - the implementation brief, if one exists
+- downloaded Stitch HTML artifacts, if available
 - recent verification output or visual review notes
 
 ## Required Output
@@ -34,10 +35,11 @@ Produce a review summary that:
    - token/style drift
    - missing states
    - wrong component boundaries
-3. Prefer the smallest correction loop:
+3. Use Stitch HTML to reason about structural drift and screenshots to reason about visual drift when both exist.
+4. Prefer the smallest correction loop:
    - fix code when the design is still right
    - request a new Stitch pass only when the approved design itself is wrong or incomplete
-4. Update `.codex/HANDOFF.md` with the current review status and next step.
+5. Update `.codex/HANDOFF.md` with the current review status and next step.
 
 ## Handoff
 
