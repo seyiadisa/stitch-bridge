@@ -1,44 +1,43 @@
-# stitch-orchestrator
+# stitch-bridge
 
-`stitch-orchestrator` is a lean Codex plugin for turning approved Stitch passes into faithful frontend implementations.
+`stitch-bridge` is a skill-first plugin for using Google Stitch design passes from Codex and Claude Code. It helps coding agents generate and hydrate Stitch artifacts, interpret an approved design, implement the frontend, and review code-to-design fidelity.
 
-## Architecture
+Clone it once, install its dependencies, and register the clone as a local plugin marketplace in either agent.
 
-This plugin is intentionally skill-first:
+## What is included
 
-- bundled skills guide Codex through Stitch pass generation, interpretation, implementation, and review
-- a bundled Stitch MCP config gives the plugin its own Stitch connection path
-- a small MCP bridge forwards the user's Stitch API key to the remote Stitch MCP server
-- a small SDK helper downloads HTML and image artifacts for generated Stitch screens
+- four shared agent skills under `skills/`
+- a shared Stitch MCP connection in `.mcp.json`
+- a Stitch SDK helper for downloading screen HTML and screenshots
+- Codex plugin and marketplace metadata
+- Claude Code plugin and marketplace metadata
 
-The plugin does **not** try to replace Codex with a large scripted frontend generator. Its job is to keep the Stitch-first workflow available with as little prompt surface as possible.
-
-## Bundled Components
-
-- `.codex-plugin/plugin.json`
-- `.mcp.json`
-- `skills/stitch-generate-design-pass/`
-- `skills/stitch-interpret-design/`
-- `skills/stitch-implement-frontend/`
-- `skills/stitch-review-sync/`
-- `scripts/stitch-mcp-remote.mjs`
-- `scripts/download-stitch-artifacts.mjs`
+The plugin deliberately keeps host-specific packaging thin. Codex and Claude Code use the same skills, scripts, credentials, and generated `.stitch/` artifacts.
 
 ## Requirements
 
 - Node.js 18 or newer
+- pnpm 10 or newer
 - a Stitch API key available as `STITCH_API_KEY`
-- `pnpm install` run once in this plugin folder to install `mcp-remote` and `@google/stitch-sdk`
+- Codex or Claude Code with plugin support
 
-`STITCH_API_KEY` is the plugin's only credential. The same key authenticates both access paths:
+## Installation
 
-- Stitch MCP for agent-driven generation and project operations
-- Stitch SDK for HTML and image artifact downloads
+### 1. Clone and prepare the plugin
 
-### Configure the Stitch API key
+```bash
+git clone https://github.com/<owner>/stitch-bridge.git
+cd stitch-bridge
+pnpm install
+```
 
-1. In Stitch, open **Settings**, create an API key, and copy it.
-2. Expose the key to the process that launches Codex.
+Replace `<owner>` with the GitHub account or organization that hosts the repository.
+
+Dependencies are installed inside the clone. Keep the cloned directory in place after registering it because the local marketplace points back to this checkout.
+
+### 2. Configure the Stitch API key
+
+In Stitch, open **Settings**, create an API key, and expose it to the shell that launches your coding agent.
 
 PowerShell:
 
@@ -52,41 +51,106 @@ macOS or Linux:
 export STITCH_API_KEY="your-key"
 ```
 
-3. Start Codex from that shell. If Codex was already running, restart it so the plugin receives the variable.
+Never commit the key to this repository or a target application repository. `STITCH_API_KEY` authenticates both Stitch MCP operations and Stitch SDK artifact downloads.
 
-Never commit the key to this plugin or to a target application repository. Use your operating system, shell profile, or secret manager when you need persistent configuration.
+### 3. Add the plugin to your agent
 
-## Stitch MCP Setup
+#### Codex
 
-The bundled `.mcp.json` launches:
+From the repository root, register the clone as a local marketplace:
 
-- `node ./scripts/stitch-mcp-remote.mjs`
+```bash
+codex plugin marketplace add .
+```
 
-That script:
+Open the Codex Plugins interface, find **Stitch Bridge**, and install or enable it. Start a new thread after installing or updating the plugin so its skills and MCP tools are loaded.
 
-- resolves the local `mcp-remote` dependency
-- requires `STITCH_API_KEY`
-- sends the key to `https://stitch.googleapis.com/mcp` in the `X-Goog-Api-Key` header
+The exact installation surface can vary by Codex release. `codex plugin marketplace add .` registers the local catalog; use the Plugins interface when your CLI does not expose a separate plugin-install command.
 
-## Stitch SDK Artifact Download
+#### Claude Code
 
-The bundled SDK helper downloads the full HTML and screenshot artifacts that Stitch exposes for every screen:
+From the repository root:
 
-- `node ./scripts/download-stitch-artifacts.mjs`
+```bash
+claude plugin marketplace add .
+claude plugin install stitch-bridge@stitch-bridge
+```
 
-The helper:
+Reload plugins in an existing Claude Code session:
 
-- uses the same `STITCH_API_KEY` as the MCP connection
-- reads `.stitch/metadata.json`
-- resolves the Stitch project and screen IDs
-- writes `.stitch/designs/<screen-id>.html`
-- writes `.stitch/designs/<screen-id>.jpeg`
+```text
+/reload-plugins
+```
 
-These HTML files are the primary structural reference for frontend implementation. Screenshots remain the visual verification artifact.
+For development without installing the marketplace plugin:
 
-## Intended Workflow
+```bash
+claude --plugin-dir .
+```
 
-1. Use `stitch-generate-design-pass` to create or refresh durable Stitch artifacts for the current product brief, then hydrate the screen HTML and image artifacts with the bundled SDK helper.
-2. Use `stitch-interpret-design` to derive routes, shared primitives, and implementation priorities from the approved pass, using downloaded HTML as the primary structural reference.
-3. Use `stitch-implement-frontend` to build the app in Next.js, Nuxt, React + Vite, or Vue + Vite.
-4. Use `stitch-review-sync` to compare the implementation back to Stitch and decide the smallest correction loop.
+Claude Code copies installed marketplace plugins into its cache. The MCP launcher uses `CLAUDE_PLUGIN_ROOT` when Claude provides it, so the bundled script resolves from the cached plugin directory.
+
+### 4. Start or reload your agent
+
+- Codex: start Codex from the configured shell and open a new thread.
+- Claude Code: start it from the configured shell, or run `/reload-plugins` in an existing session.
+
+## Bundled skills
+
+- `stitch-generate-design-pass`: create or refresh a durable Stitch design pass
+- `stitch-interpret-design`: convert an approved pass into an implementation brief
+- `stitch-implement-frontend`: implement the design in a supported frontend stack
+- `stitch-review-sync`: compare the implementation with the approved pass
+
+Claude Code namespaces installed skills with the plugin name, for example:
+
+```text
+/stitch-bridge:stitch-generate-design-pass
+```
+
+Codex can select the skills automatically from their descriptions, or you can name the desired skill in your prompt.
+
+## Artifact download
+
+After a Stitch pass has written `.stitch/metadata.json`, run:
+
+```bash
+node ./scripts/download-stitch-artifacts.mjs
+```
+
+The helper resolves the Stitch project and screen IDs and writes:
+
+- `.stitch/designs/<screen-id>.html`
+- `.stitch/designs/<screen-id>.jpeg`
+
+The HTML is the primary structural implementation reference; screenshots are the visual verification reference.
+
+## Validate locally
+
+```bash
+pnpm check
+pnpm test
+```
+
+When Claude Code is installed, also run:
+
+```bash
+claude plugin validate .
+```
+
+For Codex, register the repository as a local marketplace and confirm that the plugin appears in the Plugins interface.
+
+## Updating
+
+Update the existing clone and refresh dependencies:
+
+```bash
+git pull
+pnpm install
+```
+
+Refresh the registered marketplace in your agent, then start a new Codex thread or run `/reload-plugins` in Claude Code.
+
+## License
+
+MIT
