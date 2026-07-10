@@ -26,12 +26,10 @@ The plugin deliberately keeps host-specific packaging thin. Codex and Claude Cod
 ### 1. Clone and prepare the plugin
 
 ```bash
-git clone https://github.com/<owner>/stitch-bridge.git
+git clone https://github.com/seyiadisa/stitch-bridge.git
 cd stitch-bridge
 pnpm install
 ```
-
-Replace `<owner>` with the GitHub account or organization that hosts the repository.
 
 Dependencies are installed inside the clone. Keep the cloned directory in place after registering it because the local marketplace points back to this checkout.
 
@@ -110,35 +108,7 @@ Claude Code namespaces installed skills with the plugin name, for example:
 
 Codex can select the skills automatically from their descriptions, or you can name the desired skill in your prompt.
 
-## Artifact download
-
-After a Stitch pass has written `.stitch/metadata.json`, run:
-
-```bash
-node ./scripts/download-stitch-artifacts.mjs
-```
-
-The helper resolves the Stitch project and screen IDs and writes:
-
-- `.stitch/designs/<screen-id>.html`
-- `.stitch/designs/<screen-id>.jpeg`
-
-The HTML is the primary structural implementation reference; screenshots are the visual verification reference.
-
-## Validate locally
-
-```bash
-pnpm check
-pnpm test
-```
-
-When Claude Code is installed, also run:
-
-```bash
-claude plugin validate .
-```
-
-For Codex, register the repository as a local marketplace and confirm that the plugin appears in the Plugins interface.
+During design generation, the plugin downloads Stitch's HTML and screenshot artifacts into `.stitch/`. The skills use those files as structural and visual references during implementation and review; no separate download command is required during normal use.
 
 ## Updating
 
