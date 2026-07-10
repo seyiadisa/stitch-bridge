@@ -3,7 +3,8 @@
     "stitch": {
       "command": "node",
       "args": [
-        "./scripts/stitch-mcp-remote.mjs"
+        "-e",
+        "const path = require('node:path'); const { pathToFileURL } = require('node:url'); const root = process.env.CLAUDE_PLUGIN_ROOT || process.cwd(); import(pathToFileURL(path.join(root, 'scripts', 'stitch-mcp-remote.mjs')).href).then(({ main }) => main()).catch((error) => { console.error(error.message); process.exit(1); });"
       ],
       "env": {
         "STITCH_MCP_URL": "https://stitch.googleapis.com/mcp",

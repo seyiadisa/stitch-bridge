@@ -1,16 +1,18 @@
 {
-  "name": "stitch-orchestrator",
+  "name": "stitch-bridge",
   "version": "0.2.0",
   "description": "Skill-first Codex plugin for Stitch design ingestion, artifact download, interpretation, and frontend implementation.",
   "author": {
-    "name": "Oluwaseyi Adisa"
+    "name": "Oluwaseyi Adisa",
+    "email": "oluwaseyiadisaa@gmail.com",
+    "url": "https://seyiadisa.dev"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "keywords": ["stitch", "codex", "plugin", "skills", "frontend", "fidelity"],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Stitch Orchestrator",
+    "displayName": "Stitch Bridge",
     "shortDescription": "Generate, hydrate, interpret, implement, and review Stitch passes faithfully.",
     "longDescription": "A self-contained Codex plugin that bundles Stitch MCP access, Stitch SDK artifact download support, and a small set of specialized skills for generating design passes, interpreting approved Stitch artifacts, implementing frontend apps, and reviewing code-to-design fidelity.",
     "developerName": "Oluwaseyi Adisa",

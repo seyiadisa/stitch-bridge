@@ -1,0 +1,17 @@
+{
+  "name": "stitch-bridge",
+  "description": "Stitch-first design-to-frontend workflows for coding agents.",
+  "owner": {
+    "name": "Oluwaseyi Adisa"
+  },
+  "plugins": [
+    {
+      "name": "stitch-bridge",
+      "source": "./",
+      "description": "Generate, interpret, implement, and review Stitch design passes.",
+      "version": "0.2.0",
+      "category": "Development",
+      "tags": ["stitch", "frontend", "design", "mcp"]
+    }
+  ]
+}

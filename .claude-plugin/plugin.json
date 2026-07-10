@@ -1,0 +1,12 @@
+{
+  "name": "stitch-bridge",
+  "version": "0.2.0",
+  "description": "Skill-first plugin for Stitch design ingestion, artifact download, interpretation, and frontend implementation.",
+  "author": {
+    "name": "Oluwaseyi Adisa"
+  },
+  "license": "MIT",
+  "keywords": ["stitch", "design", "frontend", "mcp", "skills"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

@@ -1,7 +1,8 @@
 {
-  "name": "stitch-orchestrator",
+  "name": "stitch-bridge",
   "version": "0.2.0",
   "private": true,
+  "license": "MIT",
   "author": {
     "name": "Oluwaseyi Adisa",
     "url": "https://seyiadisa.dev",
