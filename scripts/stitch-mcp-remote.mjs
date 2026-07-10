@@ -1,97 +1,55 @@
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
 
 const require = createRequire(import.meta.url);
 
-const remoteUrl = process.env.STITCH_MCP_URL ?? "https://stitch.googleapis.com/mcp";
-const accessToken = getAccessToken();
-const billingProject = getBillingProject();
-const proxyEntry = resolveMcpRemoteEntry();
-
-const proxyArgs = [
-  proxyEntry,
-  remoteUrl,
-  "--header",
-  `Authorization: Bearer ${accessToken}`,
-  "--header",
-  `X-Goog-User-Project: ${billingProject}`
-];
-
-const child = spawn(process.execPath, proxyArgs, {
-  stdio: "inherit",
-  env: process.env
-});
-
-child.on("exit", (code, signal) => {
-  if (signal) {
-    process.kill(process.pid, signal);
-    return;
-  }
-
-  process.exit(code ?? 1);
-});
-
-function getAccessToken() {
-  const explicitToken = process.env.STITCH_ACCESS_TOKEN?.trim();
-
-  if (explicitToken) {
-    return explicitToken;
-  }
-
-  const result = spawnSync("gcloud", ["auth", "application-default", "print-access-token"], {
-    encoding: "utf8"
+export function main(options = {}) {
+  const env = options.env ?? process.env;
+  const remoteUrl = env.STITCH_MCP_URL ?? "https://stitch.googleapis.com/mcp";
+  const apiKey = getRequiredApiKey(env);
+  const proxyEntry = resolveMcpRemoteEntry();
+  const proxyArgs = buildProxyArgs({ proxyEntry, remoteUrl, apiKey });
+  const child = spawn(process.execPath, proxyArgs, {
+    stdio: "inherit",
+    env
   });
 
-  if (result.status !== 0) {
-    fail(
-      "Could not obtain a Stitch access token from `gcloud auth application-default print-access-token`.\n" +
-        "Run `gcloud auth application-default login` or set STITCH_ACCESS_TOKEN explicitly."
-    );
-  }
+  child.on("exit", (code, signal) => {
+    if (signal) {
+      process.kill(process.pid, signal);
+      return;
+    }
 
-  const token = result.stdout.trim();
+    process.exit(code ?? 1);
+  });
 
-  if (!token) {
-    fail("`gcloud auth application-default print-access-token` returned an empty token.");
-  }
-
-  return token;
+  return child;
 }
 
-function getBillingProject() {
-  const envProject =
-    process.env.STITCH_BILLING_PROJECT?.trim() ||
-    process.env.GOOGLE_CLOUD_PROJECT?.trim() ||
-    process.env.STITCH_USER_PROJECT?.trim();
+export function getRequiredApiKey(env = process.env) {
+  const apiKey = env.STITCH_API_KEY?.trim();
 
-  if (envProject) {
-    return envProject;
-  }
-
-  const result = spawnSync("gcloud", ["config", "get-value", "project"], {
-    encoding: "utf8"
-  });
-
-  if (result.status !== 0) {
+  if (!apiKey) {
     fail(
-      "Could not resolve a Google billing project.\n" +
-        "Set GOOGLE_CLOUD_PROJECT or STITCH_BILLING_PROJECT, or configure an active gcloud project."
+      "Missing required Stitch credential `STITCH_API_KEY`.\n" +
+        "Create a Stitch API key, expose it to the Codex process, and restart Codex."
     );
   }
 
-  const project = result.stdout.trim();
+  return apiKey;
+}
 
-  if (!project || project === "(unset)") {
-    fail(
-      "No Google billing project is configured.\n" +
-        "Set GOOGLE_CLOUD_PROJECT or STITCH_BILLING_PROJECT before using the Stitch plugin."
-    );
-  }
-
-  return project;
+export function buildProxyArgs({ proxyEntry, remoteUrl, apiKey }) {
+  return [
+    proxyEntry,
+    remoteUrl,
+    "--header",
+    `X-Goog-Api-Key: ${apiKey}`
+  ];
 }
 
 function resolveMcpRemoteEntry() {
@@ -117,6 +75,14 @@ function resolveMcpRemoteEntry() {
 }
 
 function fail(message) {
-  process.stderr.write(`${message}\n`);
-  process.exit(1);
+  throw new Error(message);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    main();
+  } catch (error) {
+    process.stderr.write(`${error.message}\n`);
+    process.exit(1);
+  }
 }

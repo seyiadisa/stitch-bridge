@@ -56,8 +56,9 @@ After review approval exists, hand off to `stitch-interpret-design`.
 - Never silently fall back to a non-Stitch design generator.
 - Never overwrite a successful artifact path blindly during retries.
 - Prefer additive pass history over replacement.
-- If Stitch readiness fails, explain the missing auth or project requirement clearly.
-- If `STITCH_API_KEY` is missing or HTML downloads fail, stop the workflow. Do not continue with screenshot-only artifacts.
+- Treat `STITCH_API_KEY` as the only credential for both the bundled Stitch MCP server and SDK artifact downloads.
+- If `STITCH_API_KEY` is missing, explain that the key must be available to the Codex process and that Codex may need to be restarted.
+- If Stitch authentication or HTML downloads fail, stop the workflow. Do not continue with screenshot-only artifacts.
 - Do not infer component structure or framework routing here. That belongs to `stitch-interpret-design`.
 
 Load `references/artifact-contract.md` when you need the exact file contract.

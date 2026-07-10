@@ -70,8 +70,8 @@ export function getRequiredApiKey(env) {
 
   if (!apiKey) {
     fail(
-      "Missing required Stitch SDK credential `STITCH_API_KEY`.\n" +
-        "This plugin now requires both the Stitch MCP connection and the Stitch SDK API key."
+      "Missing required Stitch credential `STITCH_API_KEY`.\n" +
+        "This one key authenticates both the Stitch MCP connection and SDK artifact downloads."
     );
   }
 
