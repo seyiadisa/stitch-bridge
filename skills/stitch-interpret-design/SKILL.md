@@ -1,6 +1,6 @@
 ---
 name: stitch-interpret-design
-description: Use when Codex has an approved Stitch pass and needs to translate `.stitch/` artifacts into an implementation-ready frontend brief with routes, shared layout, component boundaries, required states, and fidelity rules before writing application code.
+description: Use when a coding agent has an approved Stitch pass and needs to translate `.stitch/` artifacts into an implementation-ready frontend brief with routes, shared layout, component boundaries, required states, and fidelity rules before writing application code.
 ---
 
 # Stitch Interpret Design

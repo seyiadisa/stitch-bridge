@@ -1,6 +1,6 @@
 ---
 name: stitch-implement-frontend
-description: Use when Codex already has an implementation-ready brief from an approved Stitch pass and needs to build or update Next.js, Nuxt, React + Vite, or Vue + Vite code while preserving layout, hierarchy, tokens, component boundaries, and interaction cues.
+description: Use when a coding agent already has an implementation-ready brief from an approved Stitch pass and needs to build or update Next.js, Nuxt, React + Vite, or Vue + Vite code while preserving layout, hierarchy, tokens, component boundaries, and interaction cues.
 ---
 
 # Stitch Implement Frontend

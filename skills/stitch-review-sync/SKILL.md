@@ -1,6 +1,6 @@
 ---
 name: stitch-review-sync
-description: Use when Codex needs to compare a frontend implementation against an approved Stitch pass, identify code-to-design drift, missing states, or weak component extraction, and choose the smallest correction loop without restarting the whole workflow.
+description: Use when a coding agent needs to compare a frontend implementation against an approved Stitch pass, identify code-to-design drift, missing states, or weak component extraction, and choose the smallest correction loop without restarting the whole workflow.
 ---
 
 # Stitch Review Sync

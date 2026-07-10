@@ -36,7 +36,7 @@ export function getRequiredApiKey(env = process.env) {
   if (!apiKey) {
     fail(
       "Missing required Stitch credential `STITCH_API_KEY`.\n" +
-        "Create a Stitch API key, expose it to the Codex process, and restart Codex."
+        "Create a Stitch API key, expose it to your coding agent process, and restart or reload the agent."
     );
   }
 

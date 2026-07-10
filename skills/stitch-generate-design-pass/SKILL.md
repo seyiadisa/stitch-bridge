@@ -1,6 +1,6 @@
 ---
 name: stitch-generate-design-pass
-description: Use when Codex needs to create or refresh a Stitch design pass from a product brief, write `.stitch/` artifacts, reuse or create a Stitch project, and stop at design review before any frontend implementation begins.
+description: Use when a coding agent needs to create or refresh a Stitch design pass from a product brief, write `.stitch/` artifacts, reuse or create a Stitch project, and stop at design review before any frontend implementation begins.
 ---
 
 # Stitch Generate Design Pass
