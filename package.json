@@ -2,6 +2,11 @@
   "name": "stitch-orchestrator",
   "version": "0.2.0",
   "private": true,
+  "author": {
+    "name": "Oluwaseyi Adisa",
+    "url": "https://seyiadisa.dev",
+    "email": "oluwaseyiadisaa@gmail.com"
+  },
   "description": "Skill-first Codex plugin for Stitch pass generation, interpretation, and frontend implementation.",
   "type": "module",
   "packageManager": "pnpm@10.22.0",

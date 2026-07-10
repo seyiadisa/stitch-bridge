@@ -1,7 +1,7 @@
 {
   "name": "stitch-orchestrator",
   "version": "0.2.0",
-  "description": "Skill-first Codex plugin for Stitch design ingestion, interpretation, and frontend implementation.",
+  "description": "Skill-first Codex plugin for Stitch design ingestion, artifact download, interpretation, and frontend implementation.",
   "author": {
     "name": "Oluwaseyi Adisa"
   },
@@ -11,9 +11,9 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Stitch Orchestrator",
-    "shortDescription": "Generate, interpret, implement, and review Stitch passes faithfully.",
-    "longDescription": "A self-contained Codex plugin that bundles Stitch MCP access plus a small set of specialized skills for generating design passes, interpreting approved Stitch artifacts, implementing frontend apps, and reviewing code-to-design fidelity.",
-    "developerName": "Stitch Plugin Contributors",
+    "shortDescription": "Generate, hydrate, interpret, implement, and review Stitch passes faithfully.",
+    "longDescription": "A self-contained Codex plugin that bundles Stitch MCP access, Stitch SDK artifact download support, and a small set of specialized skills for generating design passes, interpreting approved Stitch artifacts, implementing frontend apps, and reviewing code-to-design fidelity.",
+    "developerName": "Oluwaseyi Adisa",
     "category": "Developer Tools",
     "capabilities": ["Interactive", "Write"],
     "defaultPrompt": [
